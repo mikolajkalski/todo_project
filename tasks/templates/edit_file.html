@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edytuj zadanie</title>
+</head>
+<body>
+    <h1>Edytuj zadanie</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="title">Tytuł:</label><br>
+        <input type="text" id="title" name="title" value="{{ task.title }}" required><br><br>
+
+        <label for="description">Opis:</label><br>
+        <textarea id="description" name="description">{{ task.description }}</textarea><br><br>
+
+        <label for="status">Status:</label><br>
+        <select id="status" name="status">
+            <option value="todo" {% if task.status == 'todo' %}selected{% endif %}>Do zrobienia</option>
+            <option value="in_progress" {% if task.status == 'in_progress' %}selected{% endif %}>W trakcie</option>
+            <option value="done" {% if task.status == 'done' %}selected{% endif %}>Zakończone</option>
+        </select><br><br>
+
+        <label for="priority">Priorytet:</label><br>
+        <select id="priority" name="priority">
+            <option value="low" {% if task.priority == 'low' %}selected{% endif %}>Niski</option>
+            <option value="medium" {% if task.priority == 'medium' %}selected{% endif %}>Średni</option>
+            <option value="high" {% if task.priority == 'high' %}selected{% endif %}>Wysoki</option>
+        </select><br><br>
+
+        <button type="submit">Zapisz</button>
+        <a href="{% url 'task_list' %}">Anuluj</a>
+    </form>
+</body>
+</html>

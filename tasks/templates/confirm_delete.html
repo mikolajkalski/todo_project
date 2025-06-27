@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Usuń zadanie</title>
+  </head>
+  <body>
+    <h1>Usuń zadanie</h1>
+    <p>
+      Czy na pewno chcesz usunąć zadanie: <strong>{{ task.title }}</strong>?
+    </p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit">Tak, usuń</button>
+      <a href="{% url 'task_list' %}">Nie, wróć</a>
+    </form>
+  </body>
+</html>

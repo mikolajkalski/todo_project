@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from .models import Task
 
 # API - Zwraca JSON
@@ -28,23 +28,41 @@ def task_list_json(request):
     ]
     return JsonResponse(data, safe=False)
 
-# HTML widok z dodawaniem
+# HTML widok z listą i dodawaniem
 def task_list(request):
     if request.method == 'POST':
+        title = request.POST.get('title')
+        if not title:
+            return HttpResponseBadRequest("Title is required")
         Task.objects.create(
-            title=request.POST.get('title'),
-            description=request.POST.get('description'),
-            status=request.POST.get('status'),
-            priority=request.POST.get('priority')
+            title=title,
+            description=request.POST.get('description', ''),
+            status=request.POST.get('status', 'todo'),
+            priority=request.POST.get('priority', 'medium')
         )
-        return redirect('/tasks/')
+        return redirect('task_list')
 
     tasks = Task.objects.order_by('-created_at')
     return render(request, 'task_list.html', {'tasks': tasks})
+
+# Widok do edycji zadania
+
+
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+        task.title = request.POST.get('title')
+        task.description = request.POST.get('description')
+        task.status = request.POST.get('status')
+        task.priority = request.POST.get('priority')
+        task.save()
+        return redirect('task_list')
+
+    return render(request, 'edit_task.html', {'task': task})
+
 
 # Usuwanie zadania
 def delete_task(request, task_id):
     task = get_object_or_404(Task, id=task_id)
     if request.method == 'POST':
         task.delete()
-    return redirect('/tasks/')
