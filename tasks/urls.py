@@ -1,9 +1,8 @@
-from django.contrib import admin
-from django.urls import path, include
-from django.views.generic import RedirectView
+from django.urls import path
+from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('tasks/', include('tasks.urls')),
-    path('', RedirectView.as_view(url='/tasks/', permanent=True)),  # przekierowanie z '/' na '/tasks/'
+    path('', views.task_list, name='task_list'),
+    path('json/', views.task_list_json, name='task_list_json'),
+    path('delete/<int:task_id>/', views.delete_task, name='delete_task'),
 ]
